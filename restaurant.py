@@ -36,6 +36,24 @@ def write_json(filename, data):
     with open(filename, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
         file.write("\n")
+        
+def build_items(orders):
+    """Collect each item's price and count every occurrence."""
+    items = {}
+
+    for order in orders:
+        for item in order["items"]:
+            name = item["name"]
+
+            if name not in items:
+                items[name] = {
+                    "price": item["price"],
+                    "orders": 0,
+                }
+
+            items[name]["orders"] += 1
+
+    return items
 
 def main():
     """Get the input filename and load the orders."""
@@ -51,6 +69,10 @@ def main():
     customers = build_customers(orders)
     write_json("customers.json", customers)
     print(f"Created customers.json with {len(customers)} customers.")
+    
+    items = build_items(orders)
+    write_json("items.json", items)
+    print(f"Created items.json with {len(items)} items.")
 
 
 if __name__ == "__main__":
